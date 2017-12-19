@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="JoyOI.UserCenter.SDK" Version="1.0.0-alpha-10073" />
+    <PackageReference Include="Pomelo.AspNetCore.Extensions" Version="2.0.0-*" />
+    <PackageReference Include="MySqlConnector" Version="0.*" />
+  </ItemGroup>
+
+</Project>

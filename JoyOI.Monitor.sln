@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D3247C2C-1B48-47A6-99FC-C4CD6BA740A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JoyOI.Monitor", "src\JoyOI.Monitor\JoyOI.Monitor.csproj", "{765CC121-EB4D-46F3-B1DF-422ECBA8D044}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{765CC121-EB4D-46F3-B1DF-422ECBA8D044}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{765CC121-EB4D-46F3-B1DF-422ECBA8D044}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{765CC121-EB4D-46F3-B1DF-422ECBA8D044}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{765CC121-EB4D-46F3-B1DF-422ECBA8D044}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{765CC121-EB4D-46F3-B1DF-422ECBA8D044} = {D3247C2C-1B48-47A6-99FC-C4CD6BA740A0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E559C81-EB92-4F38-B379-8A0EE293C126}
+	EndGlobalSection
+EndGlobal
