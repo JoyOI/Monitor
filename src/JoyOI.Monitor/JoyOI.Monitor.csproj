@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\scripts\external\" />
   </ItemGroup>
 
   <ItemGroup>
