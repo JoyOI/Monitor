@@ -287,4 +287,4 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 
-*/config.json
+src/JoyOI.Monitor/config.json
