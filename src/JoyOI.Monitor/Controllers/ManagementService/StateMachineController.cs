@@ -6,15 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 using JoyOI.Monitor.Models;
 
-namespace JoyOI.Monitor.Controllers
+namespace JoyOI.Monitor.Controllers.ManagementService
 {
-    public class StateMachinesChartController : ChartController
+    [Route("/ManagementService/StateMachine")]
+    public class StateMachineController : ChartController
     {
         const string MGMTSVC = "mgmtsvc";
 
-        [HttpGet]
+        [HttpGet("Created")]
         public async Task<IActionResult> Created(int start, int end, int interval)
         {
+            if (start == 0 || end == 0 || interval == 0) {
+                Response.StatusCode = 400;
+                return Json(null);
+            }
             return Json(await GetChartData(
                 MGMTSVC,
                 "SELECT " +
@@ -22,7 +27,7 @@ namespace JoyOI.Monitor.Controllers
                 "Count(Id) as c " +
                 "FROM joyoi_mgmtsvc.statemachineinstances " +
                 "GROUP BY t " +
-                "HAVING t >= @start AND t <= @end" +
+                "HAVING t >= @start AND t <= @end " +
                 "ORDER BY t DESC",
                 new ChartScaling(start, end, interval),
               (rows) => new Chart
