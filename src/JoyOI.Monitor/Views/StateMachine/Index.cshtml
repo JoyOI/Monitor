@@ -1,0 +1,26 @@
+﻿@{ 
+    ViewBag.Title = "状态机";
+}
+
+@section Navigator {
+    <div class="columns">
+        <div class="location-path">
+            / <a href="/">JoyOI Monitor</a> /
+        </div>
+        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
+    </div>
+}
+
+<div class="container">
+    <div class="cont-wrap">
+        @Html.Partial("_Sidebar")
+        <div class="grid_9">
+            <div class="cont-body">
+                @Html.Partial("_Chart", new ChartMeta {
+                   Id = "sm_creation",
+                   Url = "/ManagementService/StateMachine/Created"
+                })
+            </div>
+        </div>
+    </div>
+</div>

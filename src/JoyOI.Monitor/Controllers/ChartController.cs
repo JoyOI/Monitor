@@ -48,7 +48,6 @@ namespace JoyOI.Monitor.Controllers
             }
             return proc_rows(query_data);
         }
-
         [HttpGet]
         public IActionResult Index()
         {

@@ -1,0 +1,38 @@
+﻿@model ChartMeta
+
+@{ 
+    string id = Model.Id;
+    string url = Model.Url;
+    string canvas_id = id + "_canvas";
+    string time_range_id = id + "_time_range";
+}
+
+<div class="well">
+    <select class="pull-right" id="@time_range_id">
+        <option value="60">一分钟</option>
+        <option value="300">五分钟</option>
+        <option value="1800">半小时</option>
+        <option value="3600">一小时</option>
+        <option value="21600">6小时</option>
+        <option value="43200">12小时</option>
+        <option value="86400">一天</option>
+        <option value="604800">一周</option>
+        <option value="2592000">30天</option>
+    </select>
+    <canvas id="@canvas_id"></canvas>
+</div>
+<script>
+    $(document).ready(function () {
+        let range = Number($("#@time_range_id").val());
+        let end = Math.floor(new Date().getTime() / 1000);
+        let start = end - range;
+        let points = 60;
+        let interval = Math.floor(range / points);
+        $.get(
+            "@url?start=" + start + "&end=" + end + "&interval=" + interval, 
+            function (data) {
+                alert(data);
+            }
+        )
+    })
+</script>
