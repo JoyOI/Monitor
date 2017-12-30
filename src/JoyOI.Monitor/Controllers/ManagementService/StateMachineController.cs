@@ -30,23 +30,30 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 "HAVING t >= @start AND t <= @end " +
                 "ORDER BY t DESC",
                 new ChartScaling(start, end, interval),
-              (rows) => new Chart
+              (rows) =>
               {
-                  Title = "新建的状态机",
-                  Data = new List<ChartData>() {
-                          new ChartData {
-                              Data = rows.Select(d => Tuple.Create(
-                                  Convert.ToInt64(d["t"].ToString()),
-                                  Convert.ToInt32(d["c"].ToString())
-                              ))
-                              .Where(t => t.Item1 >= start && t.Item1 <= end)
-                              .Select(t => new DataPoint
-                              {
-                                  Timestamp = t.Item1,
-                                  Value = t.Item2
-                              })
-                              .ToList()}
+                  var rows_tuple =
+                    rows.Select(d => Tuple.Create(
+                                Convert.ToInt64(d["t"].ToString()),
+                                Convert.ToDouble(d["c"].ToString())
+                            )).Where(t => t.Item1 >= start && t.Item1 <= end).ToList();
+                  var labels = rows_tuple.Select(d => d.Item1).ToList();
+                  var values = rows_tuple.Select(d => d.Item2).ToList();
+                  var datasets = new List<ChartDataSet>() {
+                          new ChartDataSet {
+                              Label = "新建的状态机",
+                              Data = values
                         }
+                  };
+                  return new Chart
+                  {
+                      Type = "bar",
+                      Data = new ChartData
+                      {
+                          Labels = labels.Select(t => t.ToString()).ToList(),
+                          Datasets = datasets
+                      }
+                  };
               }
             ));
         }

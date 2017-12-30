@@ -5,10 +5,12 @@
     string url = Model.Url;
     string canvas_id = id + "_canvas";
     string time_range_id = id + "_time_range";
+    string load_chart_func_name = "load_chart_for_" + id;
+    string chart_instance = "chart_" + id;
 }
 
 <div class="well">
-    <select class="pull-right" id="@time_range_id">
+    <select class="pull-right" id="@time_range_id" onchange="@load_chart_func_name ()">
         <option value="60">一分钟</option>
         <option value="300">五分钟</option>
         <option value="1800">半小时</option>
@@ -22,17 +24,25 @@
     <canvas id="@canvas_id"></canvas>
 </div>
 <script>
-    $(document).ready(function () {
+    var @chart_instance = null;
+    function @load_chart_func_name () {
         let range = Number($("#@time_range_id").val());
         let end = Math.floor(new Date().getTime() / 1000);
         let start = end - range;
         let points = 60;
         let interval = Math.floor(range / points);
+        if (@chart_instance != null) {
+            @chart_instance .destroy();
+        }
         $.get(
-            "@url?start=" + start + "&end=" + end + "&interval=" + interval, 
+            "@url?start=" + start + "&end=" + end + "&interval=" + interval,
             function (data) {
-                alert(data);
+                var ctx = document.getElementById("@canvas_id").getContext('2d');
+                @chart_instance = new Chart(ctx, data);
             }
         )
+    }
+    $(document).ready(function () {
+        @load_chart_func_name ()
     })
 </script>

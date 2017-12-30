@@ -8,17 +8,17 @@ namespace JoyOI.Monitor.Models
     public class Chart
     {
         public string Title { get; set; }
-        public List<ChartData> Data { get; set; }
+        public string Type { get; set; }
+        public ChartData Data { get; set; }
     }
 
     public class ChartData {
-        public string Title { get; set; }
-        public List<DataPoint> Data { get; set; }
+        public List<string> Labels { get; set; }
+        public List<ChartDataSet> Datasets { get; set; }
     }
 
-    public class DataPoint
-    {
-        public long Timestamp { get; set; }
-        public double Value { get; set; }
+    public class ChartDataSet {
+        public string Label { get; set; }
+        public List<double> Data { get; set; }
     }
 }
