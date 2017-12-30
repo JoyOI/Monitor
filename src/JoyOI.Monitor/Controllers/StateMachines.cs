@@ -23,6 +23,7 @@ namespace JoyOI.Monitor.Controllers
                 "Count(Id) as c " +
                 "FROM joyoi_mgmtsvc.statemachineinstances " +
                 "GROUP BY t " +
+                "HAVING t >= @start AND t <= @end" +
                 "ORDER BY t DESC",
                 new GraphScaling(start, end, interval),
               (rows) => new Graph

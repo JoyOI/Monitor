@@ -30,6 +30,9 @@ namespace JoyOI.Monitor.Controllers
                     sql + " LIMIT 0," + scale.Points, conn))
                 {
                     cmd.Parameters.Add(new MySqlParameter("interval", scale.Interval));
+                    cmd.Parameters.Add(new MySqlParameter("start", scale.Start));
+                    cmd.Parameters.Add(new MySqlParameter("end", scale.End));
+
                     using (var dr = await cmd.ExecuteReaderAsync())
                     {
                         while (await dr.ReadAsync()) {
