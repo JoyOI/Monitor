@@ -13,7 +13,7 @@ namespace JoyOI.Monitor.Models
 
     public class GraphData {
         public string Title { get; set; }
-        public List<DataPoint> data { get; set; }
+        public List<DataPoint> Data { get; set; }
     }
 
     public class DataPoint

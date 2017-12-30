@@ -16,14 +16,13 @@ namespace JoyOI.Monitor.Controllers
 
         [NonAction]
         public async Task<Graph> GetGraphData(
-            string name,
             string datasource,
             string sql,
             GraphScaling scale,
             Func<List<Dictionary<string, object>>, Graph> proc_rows
         )
         {
-            List<Dictionary<string, object>> query_data = new List<Dictionary<string, object>>();
+            var query_data = new List<Dictionary<string, object>>();
             using (var conn = new MySqlConnection(Startup.Config[datasource + ":ConnectionString"]))
             {
                 await conn.OpenAsync();
