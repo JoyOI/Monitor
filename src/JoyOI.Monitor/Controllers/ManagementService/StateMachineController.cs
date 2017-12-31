@@ -12,8 +12,6 @@ namespace JoyOI.Monitor.Controllers.ManagementService
     [Route("/ManagementService/StateMachine")]
     public class StateMachineController : ChartController
     {
-        const string MGMTSVC = "mgmtsvc";
-
         [HttpGet("Created")]
         public async Task<IActionResult> Created(int start, int end, int interval, int timezoneoffset, CancellationToken token)
         {
@@ -105,7 +103,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                         Int64.TryParse(d["d"].ToString(), out duration);
                         return (d["n"].ToString(), 
                                 duration,
-                                Convert.ToDouble(d["c"].ToString()));
+                                Convert.ToDouble(d["c"]));
                     }).ToList();
                   var overflow = rows_tuple.Any(d => d.Item2 >= 60);
                   var labels = rows_tuple.Select(d => d.Item2).Distinct().Where(d => d < max_scale).ToList();
