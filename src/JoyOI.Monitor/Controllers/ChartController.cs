@@ -62,16 +62,17 @@ namespace JoyOI.Monitor.Controllers
 
             return dateTime.ToString();
         }
-        protected List<(Int64, double)> FillMissingAndSort(List<(Int64, double)> rows, ChartScaling scaling) {
+        protected IEnumerable<(Int64, double)> FillMissingAndSort(IEnumerable<(Int64, double)> rows, ChartScaling scaling) {
             var rows_dict = rows.ToDictionary(t => t.Item1, t => t.Item2);
+            var rows_list = rows.ToList();
             int end = scaling.End - (scaling.End % scaling.Interval);
             while (end > scaling.Start) {
                 if (!rows_dict.ContainsKey(end)) {
-                    rows.Add(((long)end, (double)0));
+                    rows_list.Add(((long)end, (double)0));
                 }
                 end -= scaling.Interval;
             }
-            return rows.OrderByDescending(t => t.Item1).ToList();
+            return rows_list.OrderByDescending(t => t.Item1);
         }
         protected static String RandomColorHex()
         {

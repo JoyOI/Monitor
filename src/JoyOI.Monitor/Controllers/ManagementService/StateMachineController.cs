@@ -37,8 +37,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
               {
                   var rows_tuple =
                     rows.Select(d => (Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
-                            .Where(t => t.Item1 >= start && t.Item1 <= end)
-                            .ToList();
+                            .Where(t => t.Item1 >= start && t.Item1 <= end);
                   rows_tuple = this.FillMissingAndSort(rows_tuple, scaling);
                   var labels = rows_tuple.Select(d => d.Item1).ToList();
                   var values = rows_tuple.Select(d => d.Item2).ToList();
