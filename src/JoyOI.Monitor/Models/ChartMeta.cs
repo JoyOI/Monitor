@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace JoyOI.Monitor.Models
 {
-    public class SomeModel
+    public class ChartMeta
     {
+        public string Id { get; set; }
+        public string Url { get; set; }
     }
 }
