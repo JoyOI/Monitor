@@ -20,6 +20,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 Response.StatusCode = 400;
                 return Json(null);
             }
+            var scaliing = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
                 MGMTSVC,
                 "SELECT " +
@@ -29,14 +30,16 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 "GROUP BY t " +
                 "HAVING t >= @start AND t <= @end " +
                 "ORDER BY t DESC",
-                new ChartScaling(start, end, interval),
+                scaliing,
               (rows) =>
               {
                   var rows_tuple =
                     rows.Select(d => Tuple.Create(
                                 Convert.ToInt64(d["t"].ToString()),
-                                Convert.ToDouble(d["c"].ToString())
-                            )).Where(t => t.Item1 >= start && t.Item1 <= end).ToList();
+                                Convert.ToDouble(d["c"].ToString())))
+                            .Where(t => t.Item1 >= start && t.Item1 <= end)
+                            .ToList();
+                  rows_tuple = this.FillMissingAndSort(rows_tuple, scaliing);
                   var labels = rows_tuple.Select(d => d.Item1).ToList();
                   var values = rows_tuple.Select(d => d.Item2).ToList();
                   var datasets = new List<ChartDataSet>() {
@@ -50,7 +53,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                       Type = "bar",
                       Data = new ChartData
                       {
-                          Labels = labels.Select(t => t.ToString()).ToList(),
+                          Labels = labels.Select(t => ConvertTime(t)).ToList(),
                           Datasets = datasets
                       }
                   };

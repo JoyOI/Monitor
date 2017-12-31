@@ -9,36 +9,51 @@
     string chart_instance = "chart_" + id;
 }
 
-<div class="well">
+<div>
     <select class="pull-right" id="@time_range_id" onchange="@load_chart_func_name ()">
-        <option value="60">一分钟</option>
-        <option value="300">五分钟</option>
-        <option value="1800">半小时</option>
-        <option value="3600">一小时</option>
-        <option value="21600">6小时</option>
-        <option value="43200">12小时</option>
-        <option value="86400">一天</option>
-        <option value="604800">一周</option>
-        <option value="2592000">30天</option>
+        <option value="60,60">一分钟</option>
+        <option value="300,60">五分钟</option>
+        <option value="1800,60">半小时</option>
+        <option value="3600,60">一小时</option>
+        <option value="21600,12">6小时</option>
+        <option value="43200,12">12小时</option>
+        <option value="86400,24">一天</option>
+        <option value="604800,7">一周</option>
+        <option value="2592000,30">30天</option>
     </select>
-    <canvas id="@canvas_id"></canvas>
+    <canvas id="@canvas_id" style="width: 100%"></canvas>
 </div>
 <script>
     var @chart_instance = null;
     function @load_chart_func_name () {
-        let range = Number($("#@time_range_id").val());
+        let range_val = $("#@time_range_id").val().split(",");
+        let range = Number(range_val[0]);
+        let points = Number(range_val[1]);
         let end = Math.floor(new Date().getTime() / 1000);
         let start = end - range;
-        let points = 60;
         let interval = Math.floor(range / points);
-        if (@chart_instance != null) {
-            @chart_instance .destroy();
-        }
         $.get(
             "@url?start=" + start + "&end=" + end + "&interval=" + interval,
             function (data) {
-                var ctx = document.getElementById("@canvas_id").getContext('2d');
-                @chart_instance = new Chart(ctx, data);
+                if (@chart_instance == null) {
+                    data.options = {
+                        scales: {
+                            xAxes: [{
+                                type: 'time'
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        },
+                    };
+                    var ctx = document.getElementById("@canvas_id").getContext('2d');
+                    @chart_instance = new Chart(ctx, data);
+                } else {
+                    @chart_instance .data = data.data;
+                    @chart_instance .update();
+                }
             }
         )
     }
