@@ -25,32 +25,44 @@ namespace JoyOI.Monitor.Controllers.ManagementService
             return Json(await GetChartData(
                 MGMTSVC,
                 @"SELECT 
+                  Name as n, 
                   FLOOR(UNIX_TIMESTAMP(StartTime) / @interval) * @interval as t,  
-                  Count(Id) as c  
+                  Count(Id) as c
                   FROM joyoi_mgmtsvc.statemachineinstances 
-                  GROUP BY t 
+                  WHERE UNIX_TIMESTAMP(StartTime) >= @start AND UNIX_TIMESTAMP(StartTime) <= @end 
+                  GROUP BY n, t 
                   HAVING t >= @start AND t <= @end 
-                  ORDER BY t DESC 
-                  LIMIT 0, @points",
+                  ORDER BY t DESC",
                 scaling,
               (rows) =>
               {
                   var rows_tuple =
-                    rows.Select(d => (Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
-                            .Where(t => t.Item1 >= start && t.Item1 <= end);
-                  rows_tuple = this.FillMissingAndSort(rows_tuple, scaling);
-                  var labels = rows_tuple.Select(d => d.Item1).ToList();
-                  var values = rows_tuple.Select(d => d.Item2).ToList();
-                  var datasets = new List<ChartDataSet>() {
-                          new ChartDataSet {
-                              Label = "新建的状态机",
-                              Data = values,
-                              BackgroundColor = "#008b00"
-                        }
-                  };
+                    rows.Select(d => (d["n"].ToString(), Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
+                            .Where(t => t.Item2 >= start && t.Item2 <= end);
+                  var labels = FillMissingAndSort(
+                      rows_tuple
+                      .Select(d => d.Item2)
+                      .Distinct()
+                      .Select(t => (t, 0.0)), scaling
+                      )
+                      .Select(d => d.Item1);
+                  var row_types = rows_tuple.GroupBy(d => d.Item1).Select(g => g.ToList());
+                  var datasets = row_types.Select(set_rows_tuple => {
+                      var color = RandomColorHex();
+                      var data_tuple = set_rows_tuple.Select(t => (t.Item2, t.Item3));
+                      data_tuple = FillMissingAndSort(data_tuple, scaling);
+                      return new ChartDataSet {
+                          BackgroundColor = color,
+                          BorderColor = color,
+                          Label = set_rows_tuple.First().Item1,
+                          Fill = false,
+                          Data = data_tuple.Select(d => d.Item2).ToList()
+                      };
+                  }).ToList();
                   return new Chart
                   {
-                      Type = "bar",
+                      Title = "新建的状态机",
+                      Type = "line",
                       Data = new ChartData
                       {
                           Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),

@@ -20,6 +20,8 @@ namespace JoyOI.Monitor.Models
 
     public class ChartDataSet {
         public string BackgroundColor { get; set; }
+        public string BorderColor { get; set; }
+        public bool Fill { get; set; } = true;
         public string Label { get; set; }
         public IEnumerable<double> Data { get; set; }
     }
