@@ -18,6 +18,7 @@ namespace JoyOI.Monitor.Controllers
 
         protected const string MGMTSVC = "mgmtsvc";
         protected const string USERCENTER = "uc";
+        protected const string JUDGE = "oj";
 
         protected async Task<Chart> GetChartData(
             string datasource,
