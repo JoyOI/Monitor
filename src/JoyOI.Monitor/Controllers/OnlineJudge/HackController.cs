@@ -8,8 +8,8 @@ using System.Threading;
 
 namespace JoyOI.Monitor.Controllers.OnlineJudge
 {
-    [Route("/OnlineJudge/Judge")]
-    public class JudgeController : ChartController
+    [Route("/OnlineJudge/Hack")]
+    public class HackController : ChartController
     {
         [HttpGet("Chart")]
         public async Task<IActionResult> Chart(int start, int end, int interval, int timezoneoffset, CancellationToken token)
@@ -24,16 +24,16 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                 JUDGE,
                 @"SELECT 
                   Result as n, 
-                  FLOOR(UNIX_TIMESTAMP(CreatedTime) / @interval) * @interval as t,  
+                  FLOOR(UNIX_TIMESTAMP(Time) / @interval) * @interval as t,  
                   Count(Id) as c
-                  FROM joyoi_oj.judgestatuses 
-                  WHERE UNIX_TIMESTAMP(CreatedTime) >= @start AND UNIX_TIMESTAMP(CreatedTime) <= @end 
+                  FROM joyoi_oj.hackstatuses 
+                  WHERE UNIX_TIMESTAMP(Time) >= @start AND UNIX_TIMESTAMP(Time) <= @end 
                   GROUP BY n, t 
                   HAVING t >= @start AND t <= @end 
                   ORDER BY t DESC",
                 scaling,
                 //TODO: convert result code
-                GroupingLineChartRowFn(scaling, timezoneoffset, "评测结果"),
+                GroupingLineChartRowFn(scaling, timezoneoffset, "Hack 结果"),
                 token
             ));
         }
