@@ -34,7 +34,7 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                   ORDER BY t DESC 
                   LIMIT 0, @points",
                 scaling,
-                this.DefaultRowFn(scaling, timezoneoffset, "新用户注册"),
+                this.DefaultLintChartRowFn(scaling, timezoneoffset, "新用户注册"),
                 token
             ));
         }

@@ -31,7 +31,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                   ORDER BY t DESC 
                   LIMIT 0, @points",
                 scaling,
-                this.DefaultRowFn(scaling, timezoneoffset, "新建的二进制数据"),
+                this.DefaultLintChartRowFn(scaling, timezoneoffset, "新建的二进制数据"),
                 token
             ));
         }
