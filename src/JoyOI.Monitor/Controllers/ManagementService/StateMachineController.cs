@@ -88,6 +88,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 scaling,
               (rows) =>
               {
+                  var max_scale = 60;
                   var rows_tuple =
                     rows.Select(d => {
                         Int64 duration = 0;
@@ -95,15 +96,18 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                         return Tuple.Create(
                                 d["n"].ToString(), duration,
                                 Convert.ToDouble(d["c"].ToString()));
-                    })
-                            .ToList();
-                  var labels = rows_tuple.Select(d => d.Item2).Distinct().ToList();
+                    }).ToList();
+                  var overflow = rows_tuple.Any(d => d.Item2 >= 60);
+                  var labels = rows_tuple.Select(d => d.Item2).Distinct().Where(d => d < max_scale).ToList();
                   var groups = rows_tuple.GroupBy(d => d.Item1).Select(g => g.ToList()).ToList();
                   var datasets = groups.Select(g => {
                       var val_dir = g.ToDictionary(x => x.Item2, x => x.Item3);
                       var data_val = labels.Select(l => (double)val_dir.GetValueOrDefault(l, 0)).ToList();
                       var rnd = new Random();
                       var color = Color.FromArgb(rnd.Next(200), rnd.Next(200), rnd.Next(200));
+                      if (overflow) {
+                          data_val.Add(g.Where(d => d.Item2 >= max_scale).Select(x => x.Item3).Sum());
+                      }
                       return new ChartDataSet
                       {
                           Label = g.First().Item1,
@@ -111,13 +115,17 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                           BackgroundColor = HexColor(color)
                       };
                   }).ToList();
+                  var str_labels = labels.Select(t => t.ToString() + "s").ToList();
+                  if (overflow) {
+                      str_labels.Add("≥" + max_scale.ToString() + "s");
+                  }
                   return new Chart
                   {
                       Title = "状态机运行时长",
                       Type = "bar",
                       Data = new ChartData
                       {
-                          Labels = labels.Select(t => t.ToString() + "s").ToList(),
+                          Labels = str_labels,
                           Datasets = datasets
                       }
                   };
