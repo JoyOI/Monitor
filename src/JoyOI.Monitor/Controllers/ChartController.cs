@@ -100,7 +100,7 @@ namespace JoyOI.Monitor.Controllers
                      }}
             };
         }
-        protected Func<IEnumerable<IDictionary<string, object>>, Chart> DefaultRowFn(
+        protected Func<IEnumerable<IDictionary<string, object>>, Chart> DefaultLintChartRowFn(
             ChartScaling scaling, int timezoneoffset, string title, string color = "#008b00"
         )
         {
@@ -124,6 +124,52 @@ namespace JoyOI.Monitor.Controllers
                   };
                 return new Chart
                 {
+                    Type = "line",
+                    Data = new ChartData
+                    {
+                        Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),
+                        Datasets = datasets
+                    },
+                    Options = new
+                    {
+                        Scales = TimeScaleOption()
+                    }
+                };
+            };
+        }
+        protected Func<IEnumerable<IDictionary<string, object>>, Chart> GroupingLineChartRowFn(
+            ChartScaling scaling, int timezoneoffset, string title
+        )
+        {
+            return (rows) =>
+            {
+                var rows_tuple =
+                  rows.Select(d => (d["n"].ToString(), Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
+                          .Where(t => t.Item2 >= scaling.Start && t.Item2 <= scaling.End);
+                var labels = FillMissingAndSort(
+                    rows_tuple
+                    .Select(d => d.Item2)
+                    .Distinct()
+                    .Select(t => (t, 0.0)), scaling
+                    )
+                    .Select(d => d.Item1);
+                var row_types = rows_tuple.GroupBy(d => d.Item1).Select(g => g.ToList());
+                var datasets = row_types.Select(set_rows_tuple => {
+                    var color = RandomColorHex();
+                    var data_tuple = set_rows_tuple.Select(t => (t.Item2, t.Item3));
+                    data_tuple = FillMissingAndSort(data_tuple, scaling);
+                    return new ChartDataSet
+                    {
+                        BackgroundColor = color,
+                        BorderColor = color,
+                        Label = set_rows_tuple.First().Item1,
+                        Fill = false,
+                        Data = data_tuple.Select(d => d.Item2).ToList()
+                    };
+                }).ToList();
+                return new Chart
+                {
+                    Title = title,
                     Type = "line",
                     Data = new ChartData
                     {
