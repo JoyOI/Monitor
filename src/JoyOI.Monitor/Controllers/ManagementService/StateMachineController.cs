@@ -36,9 +36,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
               (rows) =>
               {
                   var rows_tuple =
-                    rows.Select(d => Tuple.Create(
-                                Convert.ToInt64(d["t"].ToString()),
-                                Convert.ToDouble(d["c"].ToString())))
+                    rows.Select(d => (Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
                             .Where(t => t.Item1 >= start && t.Item1 <= end)
                             .ToList();
                   rows_tuple = this.FillMissingAndSort(rows_tuple, scaling);
@@ -94,8 +92,8 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                     rows.Select(d => {
                         Int64 duration = 0;
                         Int64.TryParse(d["d"].ToString(), out duration);
-                        return Tuple.Create(
-                                d["n"].ToString(), duration,
+                        return (d["n"].ToString(), 
+                                duration,
                                 Convert.ToDouble(d["c"].ToString()));
                     }).ToList();
                   var overflow = rows_tuple.Any(d => d.Item2 >= 60);

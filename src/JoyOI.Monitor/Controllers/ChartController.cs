@@ -62,12 +62,12 @@ namespace JoyOI.Monitor.Controllers
 
             return dateTime.ToString();
         }
-        protected List<Tuple<Int64, double>> FillMissingAndSort(List<Tuple<Int64, double>> rows, ChartScaling scaling) {
+        protected List<(Int64, double)> FillMissingAndSort(List<(Int64, double)> rows, ChartScaling scaling) {
             var rows_dict = rows.ToDictionary(t => t.Item1, t => t.Item2);
             int end = scaling.End - (scaling.End % scaling.Interval);
             while (end > scaling.Start) {
                 if (!rows_dict.ContainsKey(end)) {
-                    rows.Add(Tuple.Create((long)end, (double)0));
+                    rows.Add(((long)end, (double)0));
                 }
                 end -= scaling.Interval;
             }
