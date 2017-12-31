@@ -62,7 +62,7 @@ namespace JoyOI.Monitor.Controllers
 
             return dateTime.ToString();
         }
-        protected IEnumerable<(Int64, double)> FillMissingAndSort(IEnumerable<(Int64, double)> rows, ChartScaling scaling) {
+        protected IEnumerable<(long, double)> FillMissingAndSort(IEnumerable<(long, double)> rows, ChartScaling scaling) {
             var rows_dict = rows.ToDictionary(t => t.Item1, t => t.Item2);
             var rows_list = rows.ToList();
             int end = scaling.End - (scaling.End % scaling.Interval);
