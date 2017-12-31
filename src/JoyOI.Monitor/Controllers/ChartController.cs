@@ -19,6 +19,7 @@ namespace JoyOI.Monitor.Controllers
         protected const string MGMTSVC = "mgmtsvc";
         protected const string USERCENTER = "uc";
         protected const string JUDGE = "oj";
+        protected const string FORUM = "forum";
 
         protected async Task<Chart> GetChartData(
             string datasource,
@@ -101,7 +102,7 @@ namespace JoyOI.Monitor.Controllers
                      }}
             };
         }
-        protected Func<IEnumerable<IDictionary<string, object>>, Chart> DefaultLintChartRowFn(
+        protected Func<IEnumerable<IDictionary<string, object>>, Chart> DefaultLineChartRowFn(
             ChartScaling scaling, int timezoneoffset, string title, string color = "#008b00"
         )
         {

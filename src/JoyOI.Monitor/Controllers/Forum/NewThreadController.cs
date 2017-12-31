@@ -11,8 +11,8 @@ using JoyOI.Monitor.Models;
 namespace JoyOI.Monitor.Controllers.UserCenter
 {
     
-    [Route("/UserCenter/UserRegister")]
-    public class UserRegisterController : ChartController
+    [Route("/Forum/NewThread")]
+    public class NewThreadController : ChartController
     {
         [HttpGet("Chart")]
         public async Task<IActionResult> Chart(int start, int end, int interval, int timezoneoffset, CancellationToken token)
@@ -24,17 +24,17 @@ namespace JoyOI.Monitor.Controllers.UserCenter
             }
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
-                USERCENTER,
+                FORUM,
                 @"SELECT 
-                  FLOOR(UNIX_TIMESTAMP(RegisterTime) / @interval) * @interval as t,  
+                  FLOOR(UNIX_TIMESTAMP(CreationTime) / @interval) * @interval as t,  
                   Count(Id) as c  
-                  FROM joyoi_uc.aspnetusers 
+                  FROM joyoi_forum.threads 
                   GROUP BY t 
                   HAVING t >= @start AND t <= @end 
                   ORDER BY t DESC 
                   LIMIT 0, @points",
                 scaling,
-                this.DefaultLineChartRowFn(scaling, timezoneoffset, "新用户注册"),
+                this.DefaultLineChartRowFn(scaling, timezoneoffset, "新主题"),
                 token
             ));
         }
