@@ -50,15 +50,17 @@ namespace JoyOI.Monitor.Controllers
             return proc_rows(query_data);
         }
         [NonAction]
-        public string ConvertTime(long t)
+        public string ConvertTime(long t, int timezoneoffset)
         {
             // First make a System.DateTime equivalent to the UNIX Epoch.
             System.DateTime dateTime = new System.DateTime(1970, 1, 1, 0, 0, 0, 0);
 
-            // Add the number of seconds in UNIX timestamp to be converted.
-            dateTime = dateTime.AddSeconds(t);
+            var offset_sec = timezoneoffset * 60;
 
-            return dateTime.ToLocalTime().ToString();
+            // Add the number of seconds in UNIX timestamp to be converted.
+            dateTime = dateTime.AddSeconds(t - offset_sec);
+
+            return dateTime.ToString();
         }
         [NonAction]
         public List<Tuple<Int64, double>> FillMissingAndSort(List<Tuple<Int64, double>> rows, ChartScaling scaling) {

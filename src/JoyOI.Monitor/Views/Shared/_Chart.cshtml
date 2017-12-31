@@ -26,14 +26,15 @@
 <script>
     var @chart_instance = null;
     function @load_chart_func_name () {
+        let now = new Date();
         let range_val = $("#@time_range_id").val().split(",");
         let range = Number(range_val[0]);
         let points = Number(range_val[1]);
-        let end = Math.floor(new Date().getTime() / 1000);
+        let end = Math.floor(now.getTime() / 1000);
         let start = end - range;
         let interval = Math.floor(range / points);
         $.get(
-            "@url?start=" + start + "&end=" + end + "&interval=" + interval,
+            "@url?start=" + start + "&end=" + end + "&interval=" + interval + "&timezoneoffset=" + now.getTimezoneOffset(),
             function (data) {
                 if (@chart_instance == null) {
                     var ctx = document.getElementById("@canvas_id").getContext('2d');

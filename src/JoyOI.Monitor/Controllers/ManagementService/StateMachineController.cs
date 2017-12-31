@@ -15,7 +15,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
         const string MGMTSVC = "mgmtsvc";
 
         [HttpGet("Created")]
-        public async Task<IActionResult> Created(int start, int end, int interval)
+        public async Task<IActionResult> Created(int start, int end, int interval, int timezoneoffset)
         {
             if (start == 0 || end == 0 || interval == 0) {
                 Response.StatusCode = 400;
@@ -56,7 +56,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                       Type = "bar",
                       Data = new ChartData
                       {
-                          Labels = labels.Select(t => ConvertTime(t)).ToList(),
+                          Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),
                           Datasets = datasets
                       },
                       Options = new {
