@@ -47,7 +47,8 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                   var datasets = new List<ChartDataSet>() {
                           new ChartDataSet {
                               Label = "新建的状态机",
-                              Data = values
+                              Data = values,
+                              BackgroundColor = HexColor(Color.Green)
                         }
                   };
                   return new Chart
@@ -102,7 +103,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                       var val_dir = g.ToDictionary(x => x.Item2, x => x.Item3);
                       var data_val = labels.Select(l => (double)val_dir.GetValueOrDefault(l, 0)).ToList();
                       var rnd = new Random();
-                      var color = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                      var color = Color.FromArgb(rnd.Next(200), rnd.Next(200), rnd.Next(200));
                       return new ChartDataSet
                       {
                           Label = g.First().Item1,

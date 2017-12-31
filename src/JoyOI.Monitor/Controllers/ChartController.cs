@@ -86,7 +86,8 @@ namespace JoyOI.Monitor.Controllers
                 {
                     {
                         new {
-                            Type = "time"
+                            Type = "time",
+                            Distribution = "Series"
                         }
                      }}
             };
