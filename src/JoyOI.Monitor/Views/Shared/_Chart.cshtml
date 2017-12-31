@@ -36,18 +36,6 @@
             "@url?start=" + start + "&end=" + end + "&interval=" + interval,
             function (data) {
                 if (@chart_instance == null) {
-                    data.options = {
-                        scales: {
-                            xAxes: [{
-                                type: 'time'
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }]
-                        },
-                    };
                     var ctx = document.getElementById("@canvas_id").getContext('2d');
                     @chart_instance = new Chart(ctx, data);
                 } else {

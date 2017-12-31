@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 
 using JoyOI.Monitor.Models;
 using JoyOI.Monitor.Lib;
+using System.Drawing;
 
 namespace JoyOI.Monitor.Controllers
 {
@@ -26,9 +27,9 @@ namespace JoyOI.Monitor.Controllers
             using (var conn = new MySqlConnection(Startup.Config["Datasource:" + datasource]))
             {
                 await conn.OpenAsync();
-                using (var cmd = new MySqlCommand(
-                    sql + " LIMIT 0," + scale.Points, conn))
+                using (var cmd = new MySqlCommand(sql , conn))
                 {
+                    cmd.Parameters.Add(new MySqlParameter("points", scale.Points));
                     cmd.Parameters.Add(new MySqlParameter("interval", scale.Interval));
                     cmd.Parameters.Add(new MySqlParameter("start", scale.Start));
                     cmd.Parameters.Add(new MySqlParameter("end", scale.End));
@@ -70,6 +71,25 @@ namespace JoyOI.Monitor.Controllers
                 end -= scaling.Interval;
             }
             return rows.OrderByDescending(t => t.Item1).ToList();
+        }
+        [NonAction]
+        public static String HexColor(System.Drawing.Color c)
+        {
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
+        [NonAction]
+        public static Object TimeScaleOption()
+        {
+            return new
+            {
+                XAxes = new List<Object>()
+                {
+                    {
+                        new {
+                            Type = "time"
+                        }
+                     }}
+            };
         }
         [HttpGet]
         public IActionResult Index()

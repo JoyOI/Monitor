@@ -16,9 +16,16 @@
         @Html.Partial("_Sidebar")
         <div class="grid_9">
             <div class="cont-body">
-                @Html.Partial("_Chart", new ChartMeta {
+                @Html.Partial("_Chart", new ChartMeta 
+                {
                    Id = "sm_creation",
                    Url = "/ManagementService/StateMachine/Created"
+                })
+
+                @Html.Partial("_Chart", new ChartMeta
+                {
+                    Id = "sm_lifetime",
+                    Url = "/ManagementService/StateMachine/Lifetime"
                 })
             </div>
         </div>

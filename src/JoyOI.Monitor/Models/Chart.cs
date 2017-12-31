@@ -10,6 +10,7 @@ namespace JoyOI.Monitor.Models
         public string Title { get; set; }
         public string Type { get; set; }
         public ChartData Data { get; set; }
+        public Object Options { get; set; }
     }
 
     public class ChartData {
@@ -18,6 +19,7 @@ namespace JoyOI.Monitor.Models
     }
 
     public class ChartDataSet {
+        public string BackgroundColor { get; set; }
         public string Label { get; set; }
         public List<double> Data { get; set; }
     }
