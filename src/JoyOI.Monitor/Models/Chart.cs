@@ -14,13 +14,13 @@ namespace JoyOI.Monitor.Models
     }
 
     public class ChartData {
-        public List<string> Labels { get; set; }
-        public List<ChartDataSet> Datasets { get; set; }
+        public IEnumerable<string> Labels { get; set; }
+        public IEnumerable<ChartDataSet> Datasets { get; set; }
     }
 
     public class ChartDataSet {
         public string BackgroundColor { get; set; }
         public string Label { get; set; }
-        public List<double> Data { get; set; }
+        public IEnumerable<double> Data { get; set; }
     }
 }

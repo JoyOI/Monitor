@@ -1,12 +1,12 @@
 ﻿@model ChartMeta
 
 @{ 
-    string id = Model.Id;
-    string url = Model.Url;
-    string canvas_id = id + "_canvas";
-    string time_range_id = id + "_time_range";
-    string load_chart_func_name = "load_chart_for_" + id;
-    string chart_instance = "chart_" + id;
+    var id = Model.Id;
+    var url = Model.Url;
+    var canvas_id = id + "_canvas";
+    var time_range_id = id + "_time_range";
+    var load_chart_func_name = "load_chart_for_" + id;
+    var chart_instance = "chart_" + id;
 }
 
 <div>

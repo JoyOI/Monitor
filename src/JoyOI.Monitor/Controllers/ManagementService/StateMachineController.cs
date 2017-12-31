@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using JoyOI.Monitor.Models;
-using System.Drawing;
+using System.Threading;
 
 namespace JoyOI.Monitor.Controllers.ManagementService
 {
@@ -15,7 +15,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
         const string MGMTSVC = "mgmtsvc";
 
         [HttpGet("Created")]
-        public async Task<IActionResult> Created(int start, int end, int interval, int timezoneoffset)
+        public async Task<IActionResult> Created(int start, int end, int interval, int timezoneoffset, CancellationToken token)
         {
             if (start == 0 || end == 0 || interval == 0) {
                 Response.StatusCode = 400;
@@ -24,14 +24,14 @@ namespace JoyOI.Monitor.Controllers.ManagementService
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
                 MGMTSVC,
-                "SELECT " +
-                "FLOOR(UNIX_TIMESTAMP(StartTime) / @interval) * @interval as t, " +
-                "Count(Id) as c " +
-                "FROM joyoi_mgmtsvc.statemachineinstances " +
-                "GROUP BY t " +
-                "HAVING t >= @start AND t <= @end " +
-                "ORDER BY t DESC " +
-                "LIMIT 0, @points",
+                @"SELECT 
+                  FLOOR(UNIX_TIMESTAMP(StartTime) / @interval) * @interval as t,  
+                  Count(Id) as c  
+                  FROM joyoi_mgmtsvc.statemachineinstances 
+                  GROUP BY t 
+                  HAVING t >= @start AND t <= @end 
+                  ORDER BY t DESC 
+                  LIMIT 0, @points",
                 scaling,
               (rows) =>
               {
@@ -48,7 +48,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                           new ChartDataSet {
                               Label = "新建的状态机",
                               Data = values,
-                              BackgroundColor = HexColor(Color.Green)
+                              BackgroundColor = "#008b00"
                         }
                   };
                   return new Chart
@@ -63,12 +63,13 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                           Scales = TimeScaleOption()
                       }
                   };
-              }
+              },
+              token
             ));
         }
 
         [HttpGet("Lifetime")]
-        public async Task<IActionResult> Lifetime(int start, int end, int interval)
+        public async Task<IActionResult> Lifetime(int start, int end, int interval, CancellationToken token)
         {
             if (start == 0 || end == 0 || interval == 0)
             {
@@ -78,13 +79,13 @@ namespace JoyOI.Monitor.Controllers.ManagementService
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
                 MGMTSVC,
-                "SELECT " +
-                "Name as n, " +
-                "FLOOR(UNIX_TIMESTAMP(EndTime) - UNIX_TIMESTAMP(StartTime)) as d," +
-                "Count(Id) as c " +
-                "FROM joyoi_mgmtsvc.statemachineinstances " +
-                "WHERE UNIX_TIMESTAMP(StartTime) >= @start AND UNIX_TIMESTAMP(StartTime) <= @end " +
-                "GROUP BY d, n ",
+                @"SELECT 
+                  Name as n, 
+                  FLOOR(UNIX_TIMESTAMP(EndTime) - UNIX_TIMESTAMP(StartTime)) as d,
+                  Count(Id) as c 
+                  FROM joyoi_mgmtsvc.statemachineinstances 
+                  WHERE UNIX_TIMESTAMP(StartTime) >= @start AND UNIX_TIMESTAMP(StartTime) <= @end 
+                  GROUP BY d, n ",
                 scaling,
               (rows) =>
               {
@@ -103,8 +104,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                   var datasets = groups.Select(g => {
                       var val_dir = g.ToDictionary(x => x.Item2, x => x.Item3);
                       var data_val = labels.Select(l => (double)val_dir.GetValueOrDefault(l, 0)).ToList();
-                      var rnd = new Random();
-                      var color = Color.FromArgb(rnd.Next(200), rnd.Next(200), rnd.Next(200));
+                      var color = RandomColorHex();
                       if (overflow) {
                           data_val.Add(g.Where(d => d.Item2 >= max_scale).Select(x => x.Item3).Sum());
                       }
@@ -112,7 +112,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                       {
                           Label = g.First().Item1,
                           Data = data_val,
-                          BackgroundColor = HexColor(color)
+                          BackgroundColor = color
                       };
                   }).ToList();
                   var str_labels = labels.Select(t => t.ToString() + "s").ToList();
@@ -129,7 +129,8 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                           Datasets = datasets
                       }
                   };
-              }
+              },
+              token
             ));
         }
     }
