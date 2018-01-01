@@ -126,6 +126,7 @@ namespace JoyOI.Monitor.Controllers
                   };
                 return new Chart
                 {
+                    Title = title,
                     Type = "line",
                     Data = new ChartData
                     {
