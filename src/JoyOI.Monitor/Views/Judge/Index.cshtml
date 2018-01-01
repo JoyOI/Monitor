@@ -1,0 +1,25 @@
+﻿@{ 
+    ViewBag.Title = "评测记录统计";
+}
+
+@section Navigator {
+    <div class="columns">
+        <div class="location-path">
+            / <a href="/">JoyOI Monitor</a> /
+        </div>
+        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
+    </div>
+}
+
+<div class="container">
+    <div class="cont-wrap">
+        @Html.Partial("_Sidebar")
+        <div class="grid_9">
+           @Html.Partial("_Chart", new ChartMeta
+           {
+               Id = "judge_results",
+               Url = "/OnlineJudge/Judge/Chart"
+           })
+        </div>
+    </div>
+</div>

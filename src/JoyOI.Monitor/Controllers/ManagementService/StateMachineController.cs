@@ -12,8 +12,6 @@ namespace JoyOI.Monitor.Controllers.ManagementService
     [Route("/ManagementService/StateMachine")]
     public class StateMachineController : ChartController
     {
-        const string MGMTSVC = "mgmtsvc";
-
         [HttpGet("Created")]
         public async Task<IActionResult> Created(int start, int end, int interval, int timezoneoffset, CancellationToken token)
         {
@@ -25,42 +23,16 @@ namespace JoyOI.Monitor.Controllers.ManagementService
             return Json(await GetChartData(
                 MGMTSVC,
                 @"SELECT 
+                  Name as n, 
                   FLOOR(UNIX_TIMESTAMP(StartTime) / @interval) * @interval as t,  
-                  Count(Id) as c  
+                  Count(Id) as c
                   FROM joyoi_mgmtsvc.statemachineinstances 
-                  GROUP BY t 
+                  WHERE UNIX_TIMESTAMP(StartTime) >= @start AND UNIX_TIMESTAMP(StartTime) <= @end 
+                  GROUP BY n, t 
                   HAVING t >= @start AND t <= @end 
-                  ORDER BY t DESC 
-                  LIMIT 0, @points",
+                  ORDER BY t DESC",
                 scaling,
-              (rows) =>
-              {
-                  var rows_tuple =
-                    rows.Select(d => (Convert.ToInt64(d["t"]), Convert.ToDouble(d["c"])))
-                            .Where(t => t.Item1 >= start && t.Item1 <= end);
-                  rows_tuple = this.FillMissingAndSort(rows_tuple, scaling);
-                  var labels = rows_tuple.Select(d => d.Item1).ToList();
-                  var values = rows_tuple.Select(d => d.Item2).ToList();
-                  var datasets = new List<ChartDataSet>() {
-                          new ChartDataSet {
-                              Label = "新建的状态机",
-                              Data = values,
-                              BackgroundColor = "#008b00"
-                        }
-                  };
-                  return new Chart
-                  {
-                      Type = "bar",
-                      Data = new ChartData
-                      {
-                          Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),
-                          Datasets = datasets
-                      },
-                      Options = new {
-                          Scales = TimeScaleOption()
-                      }
-                  };
-              },
+              GroupingLineChartRowFn(scaling, timezoneoffset, "新建的状态机"),
               token
             ));
         }
@@ -93,7 +65,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                         Int64.TryParse(d["d"].ToString(), out duration);
                         return (d["n"].ToString(), 
                                 duration,
-                                Convert.ToDouble(d["c"].ToString()));
+                                Convert.ToDouble(d["c"]));
                     }).ToList();
                   var overflow = rows_tuple.Any(d => d.Item2 >= 60);
                   var labels = rows_tuple.Select(d => d.Item2).Distinct().Where(d => d < max_scale).ToList();

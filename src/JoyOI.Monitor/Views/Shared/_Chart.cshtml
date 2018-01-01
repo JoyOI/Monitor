@@ -39,6 +39,15 @@
             function (data) {
                 if (@chart_instance == null) {
                     var ctx = document.getElementById("@canvas_id").getContext('2d');
+                    if (data.options == null) { 
+                        data.options = {};
+                    }
+                    if (data.title != null) { 
+                        data.options.title = {
+                            display: true,
+                            text: data.title
+                        };
+                    }
                     @chart_instance = new Chart(ctx, data);
                 } else {
                     @chart_instance .data = data.data;
