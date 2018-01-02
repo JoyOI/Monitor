@@ -73,7 +73,7 @@ namespace JoyOI.Monitor.Controllers
             var rows_dict = rows.ToDictionary(t => t.Item1, t => t.Item2);
             var rows_list = rows.ToList();
             int end = scaling.End - (scaling.End % scaling.Interval);
-            while (end > scaling.Start)
+            while (end >= scaling.Start)
             {
                 if (!rows_dict.ContainsKey(end))
                 {
