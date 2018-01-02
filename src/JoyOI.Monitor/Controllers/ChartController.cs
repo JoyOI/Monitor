@@ -20,6 +20,7 @@ namespace JoyOI.Monitor.Controllers
         protected const string USERCENTER = "uc";
         protected const string JUDGE = "oj";
         protected const string FORUM = "forum";
+        protected const string BLOG = "blog";
 
         protected async Task<Chart> GetChartData(
             string datasource,
