@@ -7,9 +7,7 @@ using System.Threading;
 using JoyOI.Monitor.Models;
 using System.Collections;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace JoyOI.Monitor.Controllers.UserCenter
+namespace JoyOI.Monitor.Controllers.OnlineJudge
 {
     
     [Route("/OnlineJudge/Contest")]
@@ -31,7 +29,7 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                   UNIX_TIMESTAMP(ADDTIME(Begin, Duration)) AS e
                   FROM joyoi_oj.contests 
                   WHERE 
-                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval -30 day) 
+                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval - 30 day) 
                   AND
                   Begin <  FROM_UNIXTIME(@end)
                   AND
@@ -102,14 +100,13 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                   DisableVirtual as nv
                   FROM joyoi_oj.contests 
                   WHERE 
-                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval -30 day) 
+                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval - 30 day) 
                   AND
                   Begin <  FROM_UNIXTIME(@end)
                   AND
                   ADDTIME(Begin, Duration) > FROM_UNIXTIME(@start)",
                 scaling,
                 (rows) => {
-                    string color = "#008b00";
                     string title = "报名的选手";
                     var rows_tuple = rows
                         .Select(d => (
@@ -122,24 +119,24 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                     foreach (var l in labels) {
                         var r_start = l;
                         var r_end = l + scaling.Interval;
+                        double v = 0, nv = 0;
                         foreach ((long, long, long, bool) row in rows_tuple)
                         {
-                            int v = 0, nv = 0;
                             if (row.Item2 >= r_start && row.Item1 <= r_end)
                             {
                                 if (row.Item4)
                                 {
                                     // not virtual
-                                    nv++;
+                                    nv += row.Item3;
                                 }
                                 else
                                 {
-                                    v++;
+                                    v += row.Item3;
                                 }
                             }
-                            virtual_comp.Add(v);
-                            nvirtual_comp.Add(nv);
                         }
+                        nvirtual_comp.Add(nv);
+                        virtual_comp.Add(v);
                     }
                     var vcolor = RandomColorHex();
                     var nvcolor = RandomColorHex();
