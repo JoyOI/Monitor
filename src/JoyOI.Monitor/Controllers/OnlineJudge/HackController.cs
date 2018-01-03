@@ -21,7 +21,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
             }
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
-                JUDGE,
+                Judge,
                 @"SELECT 
                   Result as n, 
                   FLOOR(UNIX_TIMESTAMP(Time) / @interval) * @interval as t,  

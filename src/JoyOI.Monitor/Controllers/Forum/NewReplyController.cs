@@ -24,7 +24,7 @@ namespace JoyOI.Monitor.Controllers.Forum
             }
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
-                FORUM,
+                Forum,
                 @"SELECT 
                   FLOOR(UNIX_TIMESTAMP(Time) / @interval) * @interval as t,  
                   Count(Id) as c  

@@ -23,7 +23,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
             }
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
-                JUDGE,
+                Judge,
                 @"SELECT 
                   UNIX_TIMESTAMP(Begin) AS s,
                   UNIX_TIMESTAMP(ADDTIME(Begin, Duration)) AS e
@@ -92,7 +92,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
             }
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
-                JUDGE,
+                Judge,
                 @"SELECT 
                   UNIX_TIMESTAMP(Begin) AS s,
                   UNIX_TIMESTAMP(ADDTIME(Begin, Duration)) AS e,
@@ -107,7 +107,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                   ADDTIME(Begin, Duration) > FROM_UNIXTIME(@start)",
                 scaling,
                 (rows) => {
-                    string title = "报名的选手";
+                    string title = "正在比赛的选手";
                     var rows_tuple = rows
                         .Select(d => (
                             Convert.ToInt64(d["s"]), Convert.ToInt64(d["e"]),
@@ -143,14 +143,14 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                     var datasets = new List<ChartDataSet>()
                     {
                         new ChartDataSet {
-                            Label = "正式比赛",
+                            Label = "正式参赛选手",
                             Data = nvirtual_comp,
                             Fill = false,
                             BackgroundColor = vcolor,
                             BorderColor = vcolor
                         },
                         new ChartDataSet {
-                            Label = "虚拟比赛",
+                            Label = "模拟赛选手",
                             Data = virtual_comp,
                             Fill = false,
                             BackgroundColor = nvcolor,
