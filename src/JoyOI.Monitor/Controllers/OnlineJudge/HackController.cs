@@ -20,7 +20,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Judge,
                 @"SELECT 
                   Result as n, 

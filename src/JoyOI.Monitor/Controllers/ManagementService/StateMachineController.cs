@@ -20,7 +20,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Mgmtsvc,
                 @"SELECT 
                   Name as n, 
@@ -46,7 +46,7 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Mgmtsvc,
                 @"SELECT 
                   Name as n, 

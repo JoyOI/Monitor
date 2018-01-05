@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using JoyOI.Monitor.Models;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace JoyOI.Monitor.Controllers.UserCenter
+namespace JoyOI.Monitor.Controllers.Blog
 {
     
     [Route("/Blog/NewArticle")]
@@ -23,7 +21,7 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Blog,
                 @"SELECT 
                   FLOOR(UNIX_TIMESTAMP(Time) / @interval) * @interval as t,  

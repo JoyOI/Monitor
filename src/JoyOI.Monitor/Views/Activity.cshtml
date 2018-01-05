@@ -1,0 +1,72 @@
+﻿@model ActivityMeta
+
+@{ 
+    var id = "";
+    var db = Model.Database;
+    var table_id = id + "_tb";
+    var time_range_id = id + "_time_range";
+    var load_table_func_name = "load_table_for_" + id;
+    ViewBag.Title = Model.Title;
+}
+
+@section Navigator {
+    <div class="columns">
+        <div class="location-path">
+            / <a href="/">JoyOI Monitor</a> /
+        </div>
+        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
+    </div>
+}
+
+<div class="container">
+    <div class="cont-wrap">
+        @Html.Partial("_Sidebar")
+        <div class="grid_9">
+            <div class="cont-body">
+                <select class="pull-right" id="@time_range_id" onchange="@load_table_func_name ()">
+                    <option value="60">一分钟</option>
+                    <option value="300">五分钟</option>
+                    <option value="1800">半小时</option>
+                    <option value="3600">一小时</option>
+                    <option value="21600">6小时</option>
+                    <option value="43200">12小时</option>
+                    <option value="86400" selected="selected">一天</option>
+                    <option value="604800">一周</option>
+                    <option value="2592000">30天</option>
+                </select>
+                <table id="@table_id" style="width: 100%"></table>
+            </div>
+            <script>
+                function @load_table_func_name () {
+                    let now = new Date();
+                    let range = Number($("#@time_range_id").val());
+                    let end = Math.floor(now.getTime() / 1000);
+                    let start = end - range;
+                    $.get(
+                        "/Activity/List?start=" + start + "&end=" + end + "&db=@db" +
+                        "&timezoneoffset=" + now.getTimezoneOffset(),
+                        function (data) {
+                            var table =
+                                $("#@table_id")
+                                    .html("")
+                                    .append($("<tr></tr>")
+                                        .append("<th>用户名</th>")
+                                        .append("<th>活跃时间</th>"));
+                            for (var i = 0; i < data.length; i++) {
+                                table.append($("<tr></tr>")
+                                    .append($("<td></td>")
+                                        .html(data[i].UserName))
+                                    .append($("<td></td>")
+                                        .html(data[i].ActiveTime)))
+                            }
+                        }
+                    );
+                }
+
+                $(document).ready(function () {
+                    @load_table_func_name ()
+                })
+            </script>
+        </div>
+    </div>
+</div>

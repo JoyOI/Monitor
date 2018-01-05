@@ -22,7 +22,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Judge,
                 @"select FLOOR(UNIX_TIMESTAMP(timepoint) / @interval) * @interval as t, 
                 sum(1) AS c from((select FROM_UNIXTIME(@start + divided.x * @interval) as timepoint from(select * from(select(v * 10 + u + 1) x from
@@ -53,7 +53,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 Judge,
                 @"select FLOOR(UNIX_TIMESTAMP(timepoint) / @interval) * @interval as t, 
                 sum(r.CachedAttendeeCount) AS c, 

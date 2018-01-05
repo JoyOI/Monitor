@@ -22,11 +22,11 @@ namespace JoyOI.Monitor.Controllers
         protected const string Forum = "joyoi_forum";
         protected const string Blog = "joyoi_blog";
 
-        protected async Task<Chart> GetChartData(
+        protected async Task<Object> GetData(
             string database,
             string sql,
             ChartScaling scale,
-            Func<IEnumerable<IDictionary<string, object>>, Chart> proc_rows,
+            Func<IEnumerable<IDictionary<string, object>>, Object> proc_rows,
             CancellationToken token
         )
         {

@@ -23,7 +23,7 @@ namespace JoyOI.Monitor.Controllers.UserCenter
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
+            return Json(await GetData(
                 UserCenter,
                 @"SELECT 
                   FLOOR(UNIX_TIMESTAMP(RegisterTime) / @interval) * @interval as t,  
