@@ -1,68 +1,69 @@
 ﻿<div class="grid_3">
     <div class="sidebar-section ">
-        <a class="sidebar-section-button active" href="/">
+        <a class="sidebar-section-button @(ViewBag.Current == "home" ? "active" : "")" href="/">
             <i class="fa fa-dashboard"></i>
-            <span>仪表盘</span>
+            <span>首页</span>
         </a>
-        <a class="sidebar-section-button active-uplevel" href="#">
+        <a data-group="mgmt" data-switch="off" class="sidebar-section-button active-uplevel" href="#">
             <i class="fa fa-chain"></i>
             <span>Mgmt Svc</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
         </a>
-        <a class="sidebar-section-button nested" href="/ManagementService/StateMachine">
+        <a data-group="mgmt" class="sidebar-section-button nested @(ViewBag.Current == "mgmt-statemachine" ? "active" : "")" href="/ManagementService/StateMachine">
             <span>状态机统计</span>
         </a>
-        <a class="sidebar-section-button nested" href="/ManagementService/Blob">
+        <a data-group="mgmt" class="sidebar-section-button nested @(ViewBag.Current == "mgmt-blob" ? "active" : "")" href="/ManagementService/Blob">
             <span>Blob统计</span>
         </a>
-        <a class="sidebar-section-button active-uplevel" href="#">
+        <a data-group="uc" data-switch="off" class="sidebar-section-button active-uplevel" href="#">
             <i class="fa fa-chain"></i>
-            <span>用户中心统计</span>
+            <span>用户中心</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
         </a>
-        <a class="sidebar-section-button nested" href="/UserCenter/UserRegister">
+        <a data-group="uc" class="sidebar-section-button nested @(ViewBag.Current == "uc-register" ? "active" : "")" href="/UserCenter/UserRegister">
             <span>用户注册统计</span>
         </a>
-        <a class="sidebar-section-button active-uplevel" href="#">
+        <a class="sidebar-section-button active-uplevel" data-group="oj" data-switch="off" href="#">
             <i class="fa fa-chain"></i>
             <span>Online Judge</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
         </a>
-        <a class="sidebar-section-button nested" href="/Activity/Page?db=joyoi_oj">
+        <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-active" ? "active" : "")" href="/Activity/Page?db=joyoi_oj">
             <span>活跃用户</span>
         </a>
-        <a class="sidebar-section-button nested" href="/OnlineJudge/Judge">
+        <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-judge" ? "active" : "")" href="/OnlineJudge/Judge">
             <span>评测记录统计</span>
         </a>
-        <a class="sidebar-section-button nested" href="/OnlineJudge/Hack">
+        <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-hack" ? "active" : "")" href="/OnlineJudge/Hack">
             <span>Hack记录统计</span>
         </a>
-        <a class="sidebar-section-button nested" href="/OnlineJudge/Contest">
+        <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-contest" ? "active" : "")" href="/OnlineJudge/Contest">
             <span>比赛统计</span>
         </a>
         <a class="sidebar-section-button nested" href="/OnlineJudge/Groups">
             <span>新团队创建</span>
         </a>
-        <a class="sidebar-section-button active-uplevel" href="#">
+        <a data-group="forum" data-switch="off" class="sidebar-section-button active-uplevel" href="#">
+
             <i class="fa fa-chain"></i>
             <span>论坛</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
         </a>
-        <a class="sidebar-section-button nested" href="/Activity/Page?db=joyoi_forum">
+        <a data-group="forum" class="sidebar-section-button nested @(ViewBag.Current == "forum-active" ? "active" : "")" href="/Activity/Page?db=joyoi_forum">
             <span>活跃用户</span>
         </a>
-        <a class="sidebar-section-button nested" href="/Forum/NewThread">
+        <a data-group="forum" class="sidebar-section-button nested @(ViewBag.Current == "forum-post" ? "active" : "")" href="/Forum/NewThread">
             <span>发表主题</span>
         </a>
-        <a class="sidebar-section-button nested" href="/Forum/NewReply">
+        <a data-group="forum" class="sidebar-section-button nested @(ViewBag.Current == "forum-reply" ? "active" : "")" href="/Forum/NewReply">
             <span>回复统计</span>
         </a>
-        <a class="sidebar-section-button active-uplevel" href="#">
+        <a data-group="blog" data-switch="off" class="sidebar-section-button active-uplevel" href="#">
             <i class="fa fa-chain"></i>
             <span>个人空间</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
         </a>
-        <a class="sidebar-section-button nested" href="/Blog/NewArticle">
+        <a data-group="blog" class="sidebar-section-button nested @(ViewBag.Current == "blog-post" ? "active" : "")" href="/Blog/NewArticle">
             <span>文章统计</span>
         </a>
     </div>

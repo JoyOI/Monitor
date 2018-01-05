@@ -1,5 +1,6 @@
 ﻿@{ 
     ViewBag.Title = "比赛统计";
+    ViewBag.Current = "oj-contest";
 }
 
 @section Navigator {
@@ -24,7 +25,7 @@
           @Html.Partial("_Chart", new ChartMeta
           {
               Id = "contest_attende",
-              Url = "/OnlineJudge/Contest/Attende"
+              Url = "/OnlineJudge/Contest/Attendee"
           })
         </div>
     </div>
