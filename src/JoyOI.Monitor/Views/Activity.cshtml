@@ -1,12 +1,24 @@
 ﻿@model ActivityMeta
 
-@{ 
+@{
     var id = "";
     var db = Model.Database;
     var table_id = id + "_tb";
     var time_range_id = id + "_time_range";
     var load_table_func_name = "load_table_for_" + id;
     ViewBag.Title = Model.Title;
+    if (db == "joyoi_oj")
+    {
+        ViewBag.Current = "oj-active";
+    }
+    else if (db == "joyoi_forum")
+    {
+        ViewBag.Current = "forum-active";
+    }
+    else
+    {
+        ViewBag.Current = "blog-active";
+    }
 }
 
 @section Navigator {
@@ -51,7 +63,7 @@
                                     .html("")
                                     .append($("<tr></tr>")
                                         .append("<th>用户名</th>")
-                                        .append("<th>活跃时间</th>"));
+                                        .append("<th>活动时间</th>"));
                             for (var i = 0; i < data.length; i++) {
                                 table.append($("<tr></tr>")
                                     .append($("<td></td>")
