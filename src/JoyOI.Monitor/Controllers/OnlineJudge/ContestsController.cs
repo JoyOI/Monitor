@@ -24,65 +24,27 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
                 Judge,
-                @"SELECT 
-                  UNIX_TIMESTAMP(Begin) AS s,
-                  UNIX_TIMESTAMP(ADDTIME(Begin, Duration)) AS e
-                  FROM joyoi_oj.contests 
-                  WHERE 
-                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval - 30 day) 
-                  AND
-                  Begin <  FROM_UNIXTIME(@end)
-                  AND
-                  ADDTIME(Begin, Duration) > FROM_UNIXTIME(@start)",
+                @"select FLOOR(UNIX_TIMESTAMP(timepoint) / @interval) * @interval as t, 
+                sum(1) AS c from((select FROM_UNIXTIME(@start + divided.x * @interval) as timepoint from(select * from(select(v * 10 + u + 1) x from
+                (select 0 v union select 1 union select 2 union select 3 union select 4 union
+                select 5 union select 6 union select 7 union select 8 union select 9) A,
+                (select 0 u union select 1 union select 2 union select 3 union select 4 union
+                select 5 union select 6 union select 7 union select 8 union select 9) B) AS seq) as divided)as times),
+                (select begin, duration from contests) as r
+                where r.begin >= FROM_UNIXTIME(@start - 86400 * 30)
+                and times.timepoint <= FROM_UNIXTIME(@end)
+                and (timepoint >= r.begin and timepoint<addtime(r.begin, r.duration)
+                or timepoint < r.begin and addtime(timepoint, SEC_TO_TIME(@interval)) > timepoint<addtime(r.begin, r.duration)
+                or addtime(timepoint, SEC_TO_TIME(@interval)) > r.begin and addtime(timepoint, SEC_TO_TIME(@interval)) < addtime(r.begin, r.duration))
+                group by t
+                order by t",
                 scaling,
-                (rows) => {
-                    string color = "#008b00";
-                    string title = "正在进行的比赛";
-                    var rows_tuple = rows
-                        .Select(d => (Convert.ToInt64(d["s"]), Convert.ToInt64(d["e"]))).ToList();
-                    var labels = FillMissingAndSort(new List<(long, double)>(), scaling).Select(x => x.Item1);
-                    var values = labels.Select(l =>
-                    {
-                        var r_start = l;
-                        var r_end = l + scaling.Interval;
-                        var count = 0;
-                        foreach ((long, long) row in rows_tuple) {
-                            if (row.Item2 >= r_start && row.Item1 <= r_end) {
-                                count++;
-                            }
-                        }
-                        return count;
-                    })
-                    .Select(i => (double)i);
-                    var datasets = new List<ChartDataSet>()
-                    {
-                        new ChartDataSet {
-                            Label = title,
-                            Data = values,
-                            Fill = false,
-                            BackgroundColor = color,
-                            BorderColor = color
-                        }
-                    };
-                    return new Chart {
-                        Title = title,
-                        Type = "line",
-                        Data = new ChartData
-                        {
-                            Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),
-                            Datasets = datasets
-                        },
-                        Options = new
-                        {
-                            Scales = TimeScaleOption()
-                        }
-                    };
-                },
+                DefaultLineChartRowFn(scaling, timezoneoffset, "正在进行的比赛"),
                 token
             ));
         }
 
-        [HttpGet("Attende")]
+        [HttpGet("Attendee")]
         public async Task<IActionResult> Attende(int start, int end, int interval, int timezoneoffset, CancellationToken token)
         {
             if (start == 0 || end == 0 || interval == 0)
@@ -93,84 +55,37 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
             var scaling = new ChartScaling(start, end, interval);
             return Json(await GetChartData(
                 Judge,
-                @"SELECT 
-                  UNIX_TIMESTAMP(Begin) AS s,
-                  UNIX_TIMESTAMP(ADDTIME(Begin, Duration)) AS e,
-                  CachedAttendeeCount as c,
-                  DisableVirtual as nv
-                  FROM joyoi_oj.contests 
-                  WHERE 
-                  Begin >= DATE_ADD(FROM_UNIXTIME(@start), interval - 30 day) 
-                  AND
-                  Begin <  FROM_UNIXTIME(@end)
-                  AND
-                  ADDTIME(Begin, Duration) > FROM_UNIXTIME(@start)",
+                @"select FLOOR(UNIX_TIMESTAMP(timepoint) / @interval) * @interval as t, 
+                sum(r.CachedAttendeeCount) AS c, 
+                r.DisableVirtual as n
+                from((select FROM_UNIXTIME(@start + divided.x * @interval) as timepoint from(select * from(select(v * 10 + u + 1) x from
+                (select 0 v union select 1 union select 2 union select 3 union select 4 union
+                select 5 union select 6 union select 7 union select 8 union select 9) A,
+                (select 0 u union select 1 union select 2 union select 3 union select 4 union
+                select 5 union select 6 union select 7 union select 8 union select 9) B) AS seq) as divided)as times),
+                (select begin, duration, CachedAttendeeCount, DisableVirtual from contests) as r
+                where r.begin >= FROM_UNIXTIME(@start - 86400 * 30)
+                and times.timepoint <= FROM_UNIXTIME(@end)
+                and (timepoint >= r.begin and timepoint<addtime(r.begin, r.duration)
+                or timepoint < r.begin and addtime(timepoint, SEC_TO_TIME(@interval)) > timepoint<addtime(r.begin, r.duration)
+                or addtime(timepoint, SEC_TO_TIME(@interval)) > r.begin and addtime(timepoint, SEC_TO_TIME(@interval)) < addtime(r.begin, r.duration))
+                group by t
+                order by t",
                 scaling,
                 (rows) => {
-                    string title = "正在比赛的选手";
-                    var rows_tuple = rows
-                        .Select(d => (
-                            Convert.ToInt64(d["s"]), Convert.ToInt64(d["e"]),
-                            Convert.ToInt64(d["c"]), Convert.ToBoolean(d["nv"])
-                        )).ToList();
-                    var labels = FillMissingAndSort(new List<(long, double)>(), scaling).Select(x => x.Item1);
-                    var virtual_comp = new List<double>();
-                    var nvirtual_comp = new List<double>();
-                    foreach (var l in labels) {
-                        var r_start = l;
-                        var r_end = l + scaling.Interval;
-                        double v = 0, nv = 0;
-                        foreach ((long, long, long, bool) row in rows_tuple)
-                        {
-                            if (row.Item2 >= r_start && row.Item1 <= r_end)
-                            {
-                                if (row.Item4)
-                                {
-                                    // not virtual
-                                    nv += row.Item3;
-                                }
-                                else
-                                {
-                                    v += row.Item3;
-                                }
-                            }
+                    var graph = (GroupingLineChartRowFn(scaling, timezoneoffset, "正在比赛的选手"))(rows);
+                    graph.Data.Datasets = graph.Data.Datasets.Select(ds => {
+                        switch (ds.Label) {
+                            case "0":
+                                ds.Label = "模拟赛选手";
+                                break;
+                            case "1":
+                                ds.Label = "正式参赛选手";
+                                break;
                         }
-                        nvirtual_comp.Add(nv);
-                        virtual_comp.Add(v);
-                    }
-                    var vcolor = RandomColorHex();
-                    var nvcolor = RandomColorHex();
-                    var datasets = new List<ChartDataSet>()
-                    {
-                        new ChartDataSet {
-                            Label = "正式参赛选手",
-                            Data = nvirtual_comp,
-                            Fill = false,
-                            BackgroundColor = vcolor,
-                            BorderColor = vcolor
-                        },
-                        new ChartDataSet {
-                            Label = "模拟赛选手",
-                            Data = virtual_comp,
-                            Fill = false,
-                            BackgroundColor = nvcolor,
-                            BorderColor = nvcolor
-                        }
-                    };
-                    return new Chart
-                    {
-                        Title = title,
-                        Type = "line",
-                        Data = new ChartData
-                        {
-                            Labels = labels.Select(t => ConvertTime(t, timezoneoffset)).ToList(),
-                            Datasets = datasets
-                        },
-                        Options = new
-                        {
-                            Scales = TimeScaleOption()
-                        }
-                    };
+                        return ds;
+                    });
+                    return graph;
                 },
                 token
             ));
