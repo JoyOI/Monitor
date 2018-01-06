@@ -1,9 +1,7 @@
 ﻿{
   "JoyOI": {
-    "AppId": "",
-    "Secret": ""
+    "AppId": "b453aa01-680e-49ca-a332-9d3ae296af9f",
+    "Secret": "0"
   },
-  "Datasource": {
-    "mgmtsvc": "Server=...;Port=3306;Database=...;Uid=...;Pwd=...;Connection Reset=False; Max Pool Size=50"
-  }
+  "Datasource": "Server=...;Port=3306;Uid=...;Pwd=...;Connection Reset=False; Max Pool Size=5"
 }

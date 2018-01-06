@@ -20,8 +20,8 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
-                MGMTSVC,
+            return Json(await GetData(
+                Mgmtsvc,
                 @"SELECT 
                   Name as n, 
                   FLOOR(UNIX_TIMESTAMP(StartTime) / @interval) * @interval as t,  
@@ -46,8 +46,8 @@ namespace JoyOI.Monitor.Controllers.ManagementService
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
-                MGMTSVC,
+            return Json(await GetData(
+                Mgmtsvc,
                 @"SELECT 
                   Name as n, 
                   FLOOR(UNIX_TIMESTAMP(EndTime) - UNIX_TIMESTAMP(StartTime)) as d,

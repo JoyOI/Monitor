@@ -1,0 +1,31 @@
+﻿@{ 
+    ViewBag.Title = "比赛统计";
+}
+
+@section Navigator {
+    <div class="columns">
+        <div class="location-path">
+            / <a href="/">JoyOI Monitor</a> /
+        </div>
+        <h1 class="location-current" data-emoji-enabled="">@ViewBag.Title</h1>
+    </div>
+}
+
+<div class="container">
+    <div class="cont-wrap">
+        @Html.Partial("_Sidebar")
+        <div class="grid_9">
+          @Html.Partial("_Chart", new ChartMeta
+          {
+              Id = "ongoing_contest",
+              Url = "/OnlineJudge/Contest/Ongoing"
+          })
+
+          @Html.Partial("_Chart", new ChartMeta
+          {
+              Id = "contest_attende",
+              Url = "/OnlineJudge/Contest/Attendee"
+          })
+        </div>
+    </div>
+</div>

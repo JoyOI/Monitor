@@ -20,8 +20,8 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                 return Json(null);
             }
             var scaling = new ChartScaling(start, end, interval);
-            return Json(await GetChartData(
-                JUDGE,
+            return Json(await GetData(
+                Judge,
                 @"SELECT 
                   Result as n, 
                   FLOOR(UNIX_TIMESTAMP(Time) / @interval) * @interval as t,  
@@ -32,8 +32,16 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
                   HAVING t >= @start AND t <= @end 
                   ORDER BY t DESC",
                 scaling,
-                //TODO: convert result code
-                GroupingLineChartRowFn(scaling, timezoneoffset, "Hack 结果"),
+                (rows) => {
+                    var chart_data = (GroupingLineChartRowFn(scaling, timezoneoffset, "Hack 结果"))(rows);
+                    chart_data.Data.Datasets = chart_data.Data.Datasets.Select(d => {
+                        var val = Convert.ToInt32(d.Label);
+                        d.Label = ((HackResult)val).ToString();
+                        return d;
+                    })
+                    .ToList();
+                    return chart_data;
+                },
                 token
             ));
         }

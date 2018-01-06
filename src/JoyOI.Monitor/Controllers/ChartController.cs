@@ -16,23 +16,25 @@ namespace JoyOI.Monitor.Controllers
     public class ChartController : BaseController
     {
 
-        protected const string MGMTSVC = "mgmtsvc";
-        protected const string USERCENTER = "uc";
-        protected const string JUDGE = "oj";
-        protected const string FORUM = "forum";
+        protected const string Mgmtsvc = "joyoi_mgmtsvc";
+        protected const string UserCenter = "joyoi_uc";
+        protected const string Judge = "joyoi_oj";
+        protected const string Forum = "joyoi_forum";
+        protected const string Blog = "joyoi_blog";
 
-        protected async Task<Chart> GetChartData(
-            string datasource,
+        protected async Task<Object> GetData(
+            string database,
             string sql,
             ChartScaling scale,
-            Func<IEnumerable<IDictionary<string, object>>, Chart> proc_rows,
+            Func<IEnumerable<IDictionary<string, object>>, Object> proc_rows,
             CancellationToken token
         )
         {
             var query_data = new List<Dictionary<string, object>>();
-            using (var conn = new MySqlConnection(Startup.Config["Datasource:" + datasource]))
+            using (var conn = new MySqlConnection(Startup.Config["Datasource"]))
             {
                 await conn.OpenAsync(token);
+                await conn.ChangeDatabaseAsync(database, token);
                 using (var cmd = new MySqlCommand(sql, conn))
                 {
                     cmd.Parameters.Add(new MySqlParameter("points", scale.Points));
@@ -73,7 +75,7 @@ namespace JoyOI.Monitor.Controllers
             var rows_dict = rows.ToDictionary(t => t.Item1, t => t.Item2);
             var rows_list = rows.ToList();
             int end = scaling.End - (scaling.End % scaling.Interval);
-            while (end > scaling.Start)
+            while (end >= scaling.Start)
             {
                 if (!rows_dict.ContainsKey(end))
                 {
@@ -126,6 +128,7 @@ namespace JoyOI.Monitor.Controllers
                   };
                 return new Chart
                 {
+                    Title = title,
                     Type = "line",
                     Data = new ChartData
                     {
