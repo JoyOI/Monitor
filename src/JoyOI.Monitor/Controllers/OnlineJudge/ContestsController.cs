@@ -45,7 +45,7 @@ namespace JoyOI.Monitor.Controllers.OnlineJudge
         }
 
         [HttpGet("Attendee")]
-        public async Task<IActionResult> Attende(int start, int end, int interval, int timezoneoffset, CancellationToken token)
+        public async Task<IActionResult> Attendee(int start, int end, int interval, int timezoneoffset, CancellationToken token)
         {
             if (start == 0 || end == 0 || interval == 0)
             {
