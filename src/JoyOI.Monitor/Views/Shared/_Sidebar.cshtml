@@ -40,10 +40,11 @@
         <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-contest" ? "active" : "")" href="/OnlineJudge/Contest">
             <span>比赛统计</span>
         </a>
-        <a class="sidebar-section-button nested" href="/OnlineJudge/Groups">
+        <a data-group="oj" class="sidebar-section-button nested @(ViewBag.Current == "oj-groups" ? "active" : "")" href="/OnlineJudge/Groups">
             <span>团队创建统计</span>
         </a>
         <a data-group="forum" data-switch="off" class="sidebar-section-button active-uplevel" href="#">
+
             <i class="fa fa-chain"></i>
             <span>论坛</span>
             <i class="fa fa-angle-down sidebar-uplevel"></i>
